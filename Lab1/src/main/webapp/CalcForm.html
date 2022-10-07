@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pl-PL">
+<head>
+    <title>Calculator</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<h1>Calculator</h1>
+<form action="CalcServerlet" method="POST">
+    <label>
+        <input type="text" name="a_value" value="" required="">
+    </label>
+    <label>
+        <select name="operation_type">
+            <option>+</option>
+            <option>-</option>
+            <option>*</option>
+            <option>/</option>
+        </select>
+    </label>
+    <label>
+        <input type="text" name="b_value" value="" required="">
+    </label>
+    <input type="submit" value="=">
+</form>
+</body>
+</html>
