@@ -7,7 +7,7 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 
-@WebServlet(name = "CalcServerlet", urlPatterns = {"/CalcServerlet"})
+@WebServlet(name = "calcServlet", value = "/calc_servlet")
 public class CalcServerlet extends HttpServlet {
 
     /**
@@ -22,6 +22,7 @@ public class CalcServerlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
@@ -31,8 +32,44 @@ public class CalcServerlet extends HttpServlet {
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet CalcServerlet at " + request.getContextPath() + "</h1>");
+            out.println(calculate(request));
             out.println("</body>");
             out.println("</html>");
+        }
+    }
+
+    private String calculate(HttpServletRequest request) {
+        String aValueText = request.getParameter("a-value");
+        String bValueText = request.getParameter("b-value");
+        String operationType = request.getParameter("operation-type");
+
+        double aValue;
+        double bValue;
+
+        try {
+            aValue = Double.parseDouble(aValueText);
+        } catch (NumberFormatException e) {
+            return "A value is not a number";
+        }
+        try {
+            bValue = Double.parseDouble(bValueText);
+        } catch (NumberFormatException e) {
+            return "B value is not a number";
+        }
+
+        switch (operationType) {
+            case "+":
+                return String.valueOf(aValue + bValue);
+            case "-":
+                return String.valueOf(aValue - bValue);
+            case "*":
+                return String.valueOf(aValue * bValue);
+            case "/":
+                if (bValue == 0)
+                    return "Zero division Error";
+                return String.valueOf(aValue / bValue);
+            default:
+                return "Unknown operation";
         }
     }
 
