@@ -3,24 +3,21 @@ package com.mstolarz.lab1;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 
 @WebServlet(name = "calcServlet", value = "/calc_servlet")
 public class CalcServerlet extends HttpServlet {
-
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
      *
      * @param request  servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws IOException {
         response.setContentType("text/html;charset=UTF-8");
 
         try (PrintWriter out = response.getWriter()) {
@@ -28,16 +25,21 @@ public class CalcServerlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet CalcServerlet</title>");
+            out.println("<title>CalcServerlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet CalcServerlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>CalcServerlet</h1>");
             out.println(calculate(request));
             out.println("</body>");
             out.println("</html>");
         }
     }
 
+    /**
+     * Calculates
+     * @param request serverlet request
+     * @return Calculation result or error message
+     */
     private String calculate(HttpServletRequest request) {
         String aValueText = request.getParameter("a-value");
         String bValueText = request.getParameter("b-value");
@@ -45,6 +47,9 @@ public class CalcServerlet extends HttpServlet {
 
         double aValue;
         double bValue;
+
+        aValueText = aValueText.replace(",", ".");
+        bValueText = bValueText.replace(",", ".");
 
         try {
             aValue = Double.parseDouble(aValueText);
@@ -80,12 +85,11 @@ public class CalcServerlet extends HttpServlet {
      *
      * @param request  servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws IOException {
         processRequest(request, response);
     }
 
@@ -94,12 +98,11 @@ public class CalcServerlet extends HttpServlet {
      *
      * @param request  servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws IOException {
         processRequest(request, response);
     }
 
