@@ -2,6 +2,7 @@ package com.mstolarz.lab1;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -18,10 +19,36 @@ public class CalcServerlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
+        HttpSession session = request.getSession(true);
+        ArrayList<String> history = (ArrayList<String>) session.getAttribute("history");
+        Cookie[] cookies = request.getCookies();
+        String cookieName = "visited";
+        boolean isVisited = false;
+
+        //create history list if nonexistent
+        if (history == null) {
+            history = new ArrayList<>();
+        }
+
+        if (cookies != null) {
+            for (Cookie c : cookies
+            ) {
+                if (cookieName.equals(c.getName())) {
+                    isVisited = true;
+                    break;
+                }
+            }
+        }
+        if (!isVisited) {
+            Cookie c = new Cookie(cookieName, "yes");
+            response.addCookie(c);
+        }
+
+        String result = calculate(request);
+
         response.setContentType("text/html;charset=UTF-8");
 
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
@@ -29,14 +56,32 @@ public class CalcServerlet extends HttpServlet {
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>CalcServerlet</h1>");
-            out.println(calculate(request));
+            out.println("<p>" + (isVisited ? "Known user" : "New user") + "</p>");
+            out.println("<a href=\"calc_form.html\">Calculator</a>");
+            out.println("<a href=\"calc_form.html\">Clear history</a>");
+            out.println("<h2>Result:</h2>");
+            out.println("<p>" + result + "</p>");
+            out.println("<h2>History:</h2>");
+            if (history.isEmpty()) {
+                out.println("<p>History is empty</p>");
+            } else {
+                for (String entry : history
+                ) {
+                    out.println("<p>" + entry + "</p>");
+                }
+            }
             out.println("</body>");
             out.println("</html>");
         }
+
+        //set updated history
+        history.add(result);
+        session.setAttribute("history", history);
     }
 
     /**
-     * Calculates
+     * Calculates result of Calculator's operation
+     *
      * @param request serverlet request
      * @return Calculation result or error message
      */
@@ -47,6 +92,7 @@ public class CalcServerlet extends HttpServlet {
 
         double aValue;
         double bValue;
+        double result;
 
         aValueText = aValueText.replace(",", ".");
         bValueText = bValueText.replace(",", ".");
@@ -64,18 +110,23 @@ public class CalcServerlet extends HttpServlet {
 
         switch (operationType) {
             case "+":
-                return String.valueOf(aValue + bValue);
+                result = aValue + bValue;
+                break;
             case "-":
-                return String.valueOf(aValue - bValue);
+                result = aValue - bValue;
+                break;
             case "*":
-                return String.valueOf(aValue * bValue);
+                result = aValue * bValue;
+                break;
             case "/":
                 if (bValue == 0)
                     return "Zero division Error";
-                return String.valueOf(aValue / bValue);
+                result = aValue / bValue;
+                break;
             default:
                 return "Unknown operation";
         }
+        return aValueText + " " + operationType + " " + bValueText + " = " + result;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
