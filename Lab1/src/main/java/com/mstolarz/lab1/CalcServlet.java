@@ -3,12 +3,13 @@ package com.mstolarz.lab1;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 
 @WebServlet(name = "calcServlet", value = "/calc_servlet")
-public class CalcServerlet extends HttpServlet {
+public class CalcServlet extends HttpServlet {
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -19,6 +20,8 @@ public class CalcServerlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
+        response.setContentType("text/html;charset=UTF-8");
+
         HttpSession session = request.getSession(true);
         ArrayList<String> history = (ArrayList<String>) session.getAttribute("history");
         Cookie[] cookies = request.getCookies();
@@ -44,9 +47,12 @@ public class CalcServerlet extends HttpServlet {
             response.addCookie(c);
         }
 
-        String result = calculate(request);
+        //check for clearHistory command
+        String clearHistory = request.getParameter("clear_history");
+        boolean isClearHistory = Objects.equals(clearHistory, "yes");
+        if (isClearHistory) history = new ArrayList<>();
 
-        response.setContentType("text/html;charset=UTF-8");
+        String result = calculate(request);
 
         try (PrintWriter out = response.getWriter()) {
             out.println("<!DOCTYPE html>");
@@ -58,9 +64,11 @@ public class CalcServerlet extends HttpServlet {
             out.println("<h1>CalcServerlet</h1>");
             out.println("<p>" + (isVisited ? "Known user" : "New user") + "</p>");
             out.println("<a href=\"calc_form.html\">Calculator</a>");
-            out.println("<a href=\"calc_form.html\">Clear history</a>");
-            out.println("<h2>Result:</h2>");
-            out.println("<p>" + result + "</p>");
+            out.println("<a href=\"?clear_history=yes\">Clear history</a>");
+            if (!isClearHistory) {
+                out.println("<h2>Result:</h2>");
+                out.println("<p>" + result + "</p>");
+            }
             out.println("<h2>History:</h2>");
             if (history.isEmpty()) {
                 out.println("<p>History is empty</p>");
@@ -75,8 +83,10 @@ public class CalcServerlet extends HttpServlet {
         }
 
         //set updated history
-        history.add(result);
-        session.setAttribute("history", history);
+        if (!isClearHistory) {
+            history.add(result);
+            session.setAttribute("history", history);
+        }
     }
 
     /**
@@ -94,8 +104,16 @@ public class CalcServerlet extends HttpServlet {
         double bValue;
         double result;
 
+        if ((aValueText == null) || (aValueText.trim().equals(""))) {
+            return "A value is empty";
+        }
         aValueText = aValueText.replace(",", ".");
+
+        if ((bValueText == null) || (bValueText.trim().equals(""))) {
+            return "B value is empty";
+        }
         bValueText = bValueText.replace(",", ".");
+
 
         try {
             aValue = Double.parseDouble(aValueText);
@@ -103,6 +121,7 @@ public class CalcServerlet extends HttpServlet {
             return "A value is not a number";
         }
         try {
+            bValueText = bValueText.replace(",", ".");
             bValue = Double.parseDouble(bValueText);
         } catch (NumberFormatException e) {
             return "B value is not a number";
