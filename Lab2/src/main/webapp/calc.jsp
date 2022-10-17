@@ -1,3 +1,5 @@
+<%@ page import="java.util.Objects" %>
+<%@ page import="com.mstolarz.lab2.TextHelper" %>
 <%@ page import="java.text.DecimalFormat" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
@@ -8,6 +10,7 @@
 <body>
 <h1>Loan calculator</h1>
 <form action="" id="form">
+    <input type="hidden" name="calculate" value="yes">
     <label>
         Loan amount:
         <input type="text" name="amount">
@@ -22,33 +25,43 @@
     </label>
     <input type="submit" value="Calculate">
 </form>
-<%!
-    public String calculate(ServletRequest request) {
-        String amount = request.getParameter("amount");
-        String rate = request.getParameter("rate");
-        String instalments = request.getParameter("instalments");
+<%! public String calculateLoan(HttpServletRequest request) {
+    if (Objects.equals(request.getParameter("calculate"), "yes")) {
+        String amountText = request.getParameter("amount");
+        String rateText = request.getParameter("rate");
+        String instalmentsText = request.getParameter("instalments");
+        String[] texts = {amountText, rateText, instalmentsText};
 
-        double amountDouble;
-        double rateDouble;
-        double instalmentsDouble;
+        if (TextHelper.isEmptyString(texts)) return "Missing value";
 
-        if (amount != null && !amount.trim().equals("") &&
-                rate != null && !rate.trim().equals("") &&
-                instalments != null && !instalments.trim().equals("")) {
-            try {
-                amountDouble = Double.parseDouble(amount);
-                rateDouble = Double.parseDouble(rate);
-                instalmentsDouble = Double.parseDouble(instalments);
-            } catch (Exception ex) {
-                return "Invalid input";
-            }
-            DecimalFormat df = new DecimalFormat("#.00");
-            return "Monthly instalment: " + df.format(amountDouble * rateDouble / 12 / (1 - 1 / Math.pow(1 + rateDouble / 12, instalmentsDouble)));
-        } else return "";
+        amountText = TextHelper.changeCommaToDot(amountText);
+        rateText = TextHelper.changeCommaToDot(rateText);
+        instalmentsText = TextHelper.changeCommaToDot(instalmentsText);
+
+        double amount;
+        double rate;
+        double instalments;
+
+        try {
+            amount = Double.parseDouble(amountText);
+            rate = Double.parseDouble(rateText);
+            instalments = Double.parseDouble(instalmentsText);
+        } catch (NumberFormatException e) {
+            return "Value is not a number";
+        }
+
+        double result = amount * rate / 12.0 / (1 - (1 / Math.pow(1 + rate / 12, instalments)));
+
+        DecimalFormat df = new DecimalFormat("#.00");
+        return df.format(result);
     }
+    return "";
+}
 %>
-<p><%= calculate(request) %>
+<% String result = calculateLoan(request);
+    if (!Objects.equals(result, "")) { %>
+<p><%=result%>
 </p>
-
+<% } %>
 </body>
 </html>
