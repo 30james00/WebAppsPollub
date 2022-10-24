@@ -12,6 +12,6 @@
 <br>
 <a href="calc.jsp">Loan calculator</a>
 <br>
-<a href="calc_bean.jsp">Loan calculator with Java Bean</a>
+<a href="calcBean.jsp">Loan calculator with Java Bean</a>
 </body>
 </html>
