@@ -50,7 +50,7 @@
             return "Value is not a number";
         }
 
-        double result = amount * rate / 12.0 / (1 - (1 / Math.pow(1 + rate / 12, instalments)));
+        double result = amount * rate / 1200.0 / (1 - (1 / Math.pow(1 + rate / 1200.0, instalments)));
 
         DecimalFormat df = new DecimalFormat("#.00");
         return df.format(result);
