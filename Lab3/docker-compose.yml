@@ -1,0 +1,15 @@
+version: "3.7"
+
+services:
+  mysql:
+    image: mysql
+    ports:
+      - '3306:3306'
+    volumes:
+      - lab3-mysql-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: student
+      MYSQL_DATABASE: todos
+
+volumes:
+  lab3-mysql-data:
