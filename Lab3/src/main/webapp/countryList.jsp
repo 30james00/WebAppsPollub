@@ -6,7 +6,7 @@
     <title>Country List</title>
 </head>
 <body>
-<% ArrayList<CountryBean> countryList = (ArrayList<CountryBean>) session.getAttribute("list");
+<% @SuppressWarnings("unchecked") ArrayList<CountryBean> countryList = (ArrayList<CountryBean>) session.getAttribute("list");
     for (CountryBean country : countryList) { %>
 <p><%= country.getCode()%>
 </p>
