@@ -18,40 +18,23 @@ public class ListServlet extends HttpServlet {
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }
-            //utworzenie obiektu połączenia do bazy danych MySQL:
-            Connection conn;
             try {
+                //utworzenie obiektu połączenia do bazy danych MySQL:
+                Connection conn;
                 conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/world?serverTimezone = UTC", "root", "student");
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-            //utworzenie obiektu do wykonywania zapytań do bd:
-            Statement st;
-            try {
+                //utworzenie obiektu do wykonywania zapytań do bd:
+                Statement st;
                 st = conn.createStatement();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-            String query = "SELECT * FROM country WHERE continent = 'Europe'";
-            //wykonanie zapytania SQL:
-            ResultSet rs;
-            try {
+                String query = "SELECT * FROM country WHERE continent = 'Europe'";
+                //wykonanie zapytania SQL:
+                ResultSet rs;
                 rs = st.executeQuery(query);
+                while (rs.next()) {
+                    //pobierz i wyświetl dane z odpowiedniej kolumny
+                    out.print(rs.getString("name"));
+                }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
-            }
-            while (true) {
-                try {
-                    if (!rs.next()) break;
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-                //pobierz i wyświetl dane z odpowiedniej kolumny
-                try {
-                    out.println(rs.getString("name"));
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
             }
         }
     }

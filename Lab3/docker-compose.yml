@@ -9,7 +9,6 @@ services:
       - lab3-mysql-data:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: student
-      MYSQL_DATABASE: todos
 
 volumes:
   lab3-mysql-data:
