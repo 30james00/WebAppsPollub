@@ -1,8 +1,16 @@
 <%@ page import="com.mstolarz.lab3.CountryBean" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<% @SuppressWarnings("unchecked") CountryBean country = ((ArrayList<CountryBean>) session.getAttribute("list")).get(Integer.parseInt(request.getParameter("index"))); %>
 <html>
+<% if (session.getAttribute("list") == null) { %>
+<head>
+    <title>Session error</title>
+</head>
+<body>
+<p>Session not initialized</p>
+</body>
+<% } else {
+    @SuppressWarnings("unchecked") CountryBean country = ((ArrayList<CountryBean>) session.getAttribute("list")).get(Integer.parseInt(request.getParameter("index"))); %>
 <head>
     <title><%= country.getName()%>
     </title>
@@ -15,5 +23,6 @@
 </p>
 <p>Surface area: <%= country.getSurfaceArea()%>
 </p>
+<% } %>
 </body>
 </html>

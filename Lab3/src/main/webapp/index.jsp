@@ -5,9 +5,8 @@
     <title>JSP - Hello World</title>
 </head>
 <body>
-<h1><%= "Hello World!" %>
+<h1><%= "MySQL + Bean + JSP sample" %>
 </h1>
-<br/>
-<a href="hello-servlet">Hello Servlet</a>
+<a href="ListServlet">Get European countries</a>
 </body>
 </html>
