@@ -7,13 +7,14 @@
 </head>
 <body>
 <% @SuppressWarnings("unchecked") ArrayList<CountryBean> countryList = (ArrayList<CountryBean>) session.getAttribute("list");
-    for (CountryBean country : countryList) { %>
-<p><%= country.getCode()%>
-</p>
-<p><%= country.getName()%>
-</p>
-<p><%= country.getPopulation()%>
-</p>
+    for (int i = 0; i < countryList.size(); i++) {
+        CountryBean countryBean = countryList.get(i);
+%>
+<b><%= countryBean.getName()%></b>
+<%= countryBean.getCode()%>
+<%= countryBean.getPopulation()%>
+<a href="details.jsp?index=<%= i%>">Details</a>
+<br>
 <%
     }
 %>

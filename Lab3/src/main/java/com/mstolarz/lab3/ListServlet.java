@@ -38,6 +38,7 @@ public class ListServlet extends HttpServlet {
                 country.setCode(rs.getString("code"));
                 country.setName(rs.getString("name"));
                 country.setPopulation(rs.getInt("population"));
+                country.setSurfaceArea(rs.getDouble("surfaceArea"));
                 countryList.add(country);
             }
             session.setAttribute("list", countryList);
