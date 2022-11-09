@@ -37,4 +37,9 @@ public class PracownikDao {
                     }
                 });
     }
+
+    public int delete(int id) {
+        String sql = "DELETE FROM pracownik WHERE id=" + id;
+        return template.update(sql);
+    }
 }
