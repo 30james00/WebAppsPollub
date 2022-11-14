@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import com.mstolarz.pai_spring.beans.Pracownik;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -46,7 +47,11 @@ public class PracownikDao {
 
     public Pracownik getPracownikById(int id) {
         String sql = "select * from pracownik where id=?";
-        return template.queryForObject(sql, new BeanPropertyRowMapper<Pracownik>(Pracownik.class), id);
+        try {
+            return template.queryForObject(sql, new BeanPropertyRowMapper<Pracownik>(Pracownik.class), id);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     public int delete(int id) {

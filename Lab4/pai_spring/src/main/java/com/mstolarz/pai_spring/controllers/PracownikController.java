@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller
@@ -49,6 +51,7 @@ public class PracownikController {
     @RequestMapping("/edit/{id}")
     public String edit(@PathVariable int id, Model m) {
         Pracownik pracownik = dao.getPracownikById(id);
+        if(pracownik == null) return "redirect:/viewAll";
         m.addAttribute("command", pracownik);
         return "editForm";
     }
@@ -63,5 +66,15 @@ public class PracownikController {
     public String delete(@PathVariable int id) {
         dao.delete(id);
         return "redirect:/viewAll";
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ModelAndView handleError(HttpServletRequest req,
+                                    Exception ex) {
+        ModelAndView mav = new ModelAndView();
+        mav.addObject("exception", ex);
+        mav.addObject("url", req.getRequestURL());
+        mav.setViewName("errorPage");
+        return mav;
     }
 }
