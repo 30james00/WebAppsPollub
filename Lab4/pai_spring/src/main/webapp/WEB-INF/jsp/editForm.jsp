@@ -11,8 +11,8 @@
 <body>
 <div>
     <h1>Edytuj pracownika</h1>
-    <form:form method="post" action="editsave">
-        <form:hidden  path="id" />
+    <form:form method="post" action="editSave">
+        <form:hidden path="id"/>
         <table>
             <tr>
                 <td>Nazwisko :</td>

@@ -49,13 +49,13 @@ public class PracownikController {
     @RequestMapping("/edit/{id}")
     public String edit(@PathVariable int id, Model m) {
         Pracownik pracownik = dao.getPracownikById(id);
-        m.addAttribute("pracownik", pracownik);
+        m.addAttribute("command", pracownik);
         return "editForm";
     }
 
-    @RequestMapping(value = "/editsave", method = RequestMethod.POST)
-    public String editSave(@ModelAttribute("pracownik") Pracownik pracownik) {
-        dao.update(pracownik);
+    @RequestMapping(value = "/edit/editSave", method = RequestMethod.POST)
+    public String editSave(@ModelAttribute("pr") Pracownik pr) {
+        dao.update(pr);
         return "redirect:/viewAll";
     }
 
