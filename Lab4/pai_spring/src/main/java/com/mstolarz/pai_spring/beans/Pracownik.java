@@ -4,6 +4,7 @@ public class Pracownik {
     private int id;
     private String nazwisko;
     private float pensja;
+    private String firma;
 
     public String getFirma() {
         return firma;
@@ -13,7 +14,6 @@ public class Pracownik {
         this.firma = firma;
     }
 
-    private String firma;
 
     public int getId() {
         return id;
