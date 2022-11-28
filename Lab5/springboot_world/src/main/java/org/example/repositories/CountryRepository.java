@@ -8,5 +8,5 @@ import java.util.List;
 public interface CountryRepository extends CrudRepository<Country, String> {
     List<Country> findCountriesByContinent(String continent);
     List<Country> findCountriesByPopulationBetween(int min, int max);
-    List<Country> findCountriesBySurfaceAreaBetween(double min, double max);
+    List<Country> findCountriesBySurfaceAreaBetweenAndContinent(double min, double max, String name);
 }

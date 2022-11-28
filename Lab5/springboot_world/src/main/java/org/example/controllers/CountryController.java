@@ -35,10 +35,10 @@ public class CountryController {
         return printList(countries);
     }
 
-    @RequestMapping("/country/surfaceArea/{min}/{max}")
+    @RequestMapping("/country/surfaceArea/{name}/{min}/{max}")
     @ResponseBody
-    public String countryBySurfaceArea(@PathVariable("min") double min, @PathVariable("max") double max) {
-        var countries = countryRepository.findCountriesBySurfaceAreaBetween(min, max);
+    public String countryBySurfaceAreaAndContinent(@PathVariable("min") double min, @PathVariable("max") double max, @PathVariable("name") String name) {
+        var countries = countryRepository.findCountriesBySurfaceAreaBetweenAndContinent(min, max, name);
         return printList(countries);
     }
 
