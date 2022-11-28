@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head th:include="layout :: head">
+    <title>Użytkownicy</title>
+</head>
+<body>
+<div th:include="layout :: navigationPanel"></div>
+<h1>Zarejestrowani użytkownicy</h1>
+<table>
+    <thead>
+    <tr>
+        <th>User ID</th>
+        <th>Imie</th>
+        <th>Nazwisko</th>
+        <th>Login</th>
+        <th>Password</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user: ${users}">
+        <td th:text="${user.getUserid()}"></td>
+        <td th:text="${user.getName()}"></td>
+        <td th:text="${user.getSurname()}"></td>
+        <td th:text="${user.getLogin()}"></td>
+        <td th:text="${user.getPassword()}"></td>
+    </tr>
+    </tbody>
+</table>
+<div th:include="layout :: footer"></div>
+</body>
+</html>
