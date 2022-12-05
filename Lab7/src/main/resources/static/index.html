@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Students</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <h1>Students</h1>
@@ -14,6 +15,7 @@
         <th>Name</th>
         <th>Surname</th>
         <th>Average</th>
+        <th>Edit</th>
         <th>Delete</th>
     </tr>
     </thead>
@@ -26,8 +28,19 @@
     <label for="surname">Surname</label>
     <input required type="text" name="surname" id="surname">
     <label for="average">Average</label>
-    <input required type="number" name="average" id="average">
+    <input required type="number" step="0.01" name="average" id="average">
     <input type="submit" value="Add new student">
+</form>
+<h2>Edit</h2>
+<form id="edit-form">
+    <input required type="hidden" name="id" id="edit-id">
+    <label for="edit-name">Name</label>
+    <input required type="text" name="name" id="edit-name">
+    <label for="edit-surname">Surname</label>
+    <input required type="text" name="surname" id="edit-surname">
+    <label for="edit-average">Average</label>
+    <input required type="number" step="0.01" name="average" id="edit-average">
+    <input type="submit" value="Edit new student">
 </form>
 <script src="client.js"></script>
 </body>

@@ -1,5 +1,6 @@
 const baseUrl = "http://localhost:8080";
-const exampleForm = document.getElementById("add-form");
+const addForm = document.getElementById("add-form");
+const editForm = document.getElementById("edit-form");
 
 async function getStudents() {
     const response = await fetch(`${baseUrl}/students`);
@@ -20,14 +21,30 @@ function show(students) {
         surname.innerText = student.surname;
         let average = document.createElement("td");
         average.innerText = student.average;
+        let edit = document.createElement("button");
+        edit.innerText = "Edit";
+        edit.addEventListener("click", async () => handleEditStudent(student));
+        let editOut = document.createElement("td");
+        editOut.append(edit);
         let del = document.createElement("button");
         del.innerText = "Delete";
         del.addEventListener("click", async () => handleDeleteStudent(student.id));
         let delOut = document.createElement("td");
         delOut.append(del);
-        tr.append(id, name, surname, average, delOut);
+        tr.append(id, name, surname, average, editOut, delOut);
         table.append(tr);
     });
+}
+
+async function handleEditStudent(student) {
+    let idField = document.getElementById("edit-id");
+    let nameField = document.getElementById("edit-name");
+    let surnameField = document.getElementById("edit-surname");
+    let averageField = document.getElementById("edit-average");
+    idField.value = student.id;
+    nameField.value = student.name;
+    surnameField.value = student.surname;
+    averageField.value = student.average;
 }
 
 async function handleDeleteStudent(id) {
@@ -36,13 +53,13 @@ async function handleDeleteStudent(id) {
     show(students);
 }
 
-async function handleFormSubmit(event) {
+async function handleCreateFormSubmit(event) {
     event.preventDefault();
     const form = event.currentTarget;
     const url = `${baseUrl}/add`;
     try {
         const formData = new FormData(form);
-        await postFormDataAsJson({url, formData});
+        await postFormDataAsJson({url, formData, isEdit: false});
         const students = await getStudents();
         show(students);
     } catch (error) {
@@ -50,12 +67,27 @@ async function handleFormSubmit(event) {
     }
 }
 
-async function postFormDataAsJson({url, formData}) {
+async function handleEditFormSubmit(event) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const url = `${baseUrl}/edit`;
+    try {
+        const formData = new FormData(form);
+        await postFormDataAsJson({url, formData, isEdit: true});
+        const students = await getStudents();
+        show(students);
+        editForm.reset();
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function postFormDataAsJson({url, formData, isEdit}) {
     const plainFormData = Object.fromEntries(formData.entries());
     const formDataJsonString = JSON.stringify(plainFormData);
 
     const fetchOptions = {
-        method: "POST",
+        method: isEdit ? "PUT" : "POST",
         headers: {
             "Content-Type": "application/json",
         },
@@ -74,4 +106,5 @@ async function postFormDataAsJson({url, formData}) {
 
 getStudents().then(students => show(students));
 
-exampleForm.addEventListener("submit", handleFormSubmit);
+addForm.addEventListener("submit", handleCreateFormSubmit);
+editForm.addEventListener("submit", handleEditFormSubmit);
