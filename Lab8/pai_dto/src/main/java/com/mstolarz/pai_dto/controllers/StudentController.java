@@ -1,6 +1,6 @@
 package com.mstolarz.pai_dto.controllers;
 
-import com.mstolarz.pai_dto.domain.Student;
+import com.mstolarz.pai_dto.dtos.StudentDto;
 import com.mstolarz.pai_dto.services.StudentServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +16,7 @@ public class StudentController {
     private final StudentServiceImpl studentService;
 
     @GetMapping
-    public List<Student> getAllStudents(){
+    public List<StudentDto> getAllStudents(){
         return studentService.getAllStudents();
     }
 }
