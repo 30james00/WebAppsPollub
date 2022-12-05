@@ -1,5 +1,5 @@
 const baseUrl = "http://localhost:8080";
-const addForm = document.getElementById("add-form");
+const form = document.getElementById("form");
 const editForm = document.getElementById("edit-form");
 
 async function getStudents() {
@@ -37,14 +37,16 @@ function show(students) {
 }
 
 async function handleEditStudent(student) {
-    let idField = document.getElementById("edit-id");
-    let nameField = document.getElementById("edit-name");
-    let surnameField = document.getElementById("edit-surname");
-    let averageField = document.getElementById("edit-average");
+    let idField = document.getElementById("id");
+    let nameField = document.getElementById("name");
+    let surnameField = document.getElementById("surname");
+    let averageField = document.getElementById("average");
+    let submitField = document.getElementById("submit");
     idField.value = student.id;
     nameField.value = student.name;
     surnameField.value = student.surname;
     averageField.value = student.average;
+    submitField.value = "Edit Student";
 }
 
 async function handleDeleteStudent(id) {
@@ -53,36 +55,25 @@ async function handleDeleteStudent(id) {
     show(students);
 }
 
-async function handleCreateFormSubmit(event) {
+async function handleFormSubmit(event) {
     event.preventDefault();
     const form = event.currentTarget;
-    const url = `${baseUrl}/add`;
     try {
         const formData = new FormData(form);
-        await postFormDataAsJson({url, formData, isEdit: false});
+        await postFormDataAsJson({formData, isEdit: !!formData.get("id")});
         const students = await getStudents();
         show(students);
+        form.reset();
+        let idField = document.getElementById("id");
+        idField.value = null;
+        let submitField = document.getElementById("submit");
+        submitField.value = "Add new Student";
     } catch (error) {
         console.error(error);
     }
 }
 
-async function handleEditFormSubmit(event) {
-    event.preventDefault();
-    const form = event.currentTarget;
-    const url = `${baseUrl}/edit`;
-    try {
-        const formData = new FormData(form);
-        await postFormDataAsJson({url, formData, isEdit: true});
-        const students = await getStudents();
-        show(students);
-        editForm.reset();
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-async function postFormDataAsJson({url, formData, isEdit}) {
+async function postFormDataAsJson({formData, isEdit}) {
     const plainFormData = Object.fromEntries(formData.entries());
     const formDataJsonString = JSON.stringify(plainFormData);
 
@@ -93,6 +84,8 @@ async function postFormDataAsJson({url, formData, isEdit}) {
         },
         body: formDataJsonString,
     };
+
+    let url = isEdit ? `${baseUrl}/edit` : `${baseUrl}/add`;
 
     const response = await fetch(url, fetchOptions);
 
@@ -106,5 +99,4 @@ async function postFormDataAsJson({url, formData, isEdit}) {
 
 getStudents().then(students => show(students));
 
-addForm.addEventListener("submit", handleCreateFormSubmit);
-editForm.addEventListener("submit", handleEditFormSubmit);
+form.addEventListener("submit", handleFormSubmit);
