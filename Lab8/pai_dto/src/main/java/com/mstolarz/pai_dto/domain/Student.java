@@ -20,6 +20,8 @@ public class Student {
     private String name;
     private String surname;
     private Integer age;
+    @Lob
+    private byte[] attachment;
 
     @JoinColumn(name = "address_id")
     @OneToOne(cascade = CascadeType.ALL)
