@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -29,10 +28,8 @@ public class WebSecurityConfig {
     private JwtRequestFilter jwtRequestFilter;
 
     @Bean
-    public DaoAuthenticationProvider authenticationProvider(AuthenticationManagerBuilder auth)
-            throws Exception {
-        DaoAuthenticationProvider authenticationProvider =
-                new DaoAuthenticationProvider();
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
 
         // Configure AuthenticationProvider with UserDetailsService and PasswordEncoder
         authenticationProvider.setUserDetailsService(jwtUserDetailsService);
@@ -56,18 +53,14 @@ public class WebSecurityConfig {
         // No need for CSRF in this example
         http.csrf().disable()
                 // No authentication
-                .authorizeRequests().requestMatchers("/authenticate").permitAll()
+                .authorizeHttpRequests().requestMatchers("/authenticate").permitAll()
                 // Authentication for other requests
                 .anyRequest().authenticated().and()
                 // Session is stateless
-                .exceptionHandling()
-                .authenticationEntryPoint(jwtAuthenticationEntryPoint).and()
+                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and()
                 .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-        // Add filter to authenticate each request
-        http.addFilterBefore(jwtRequestFilter,
-                UsernamePasswordAuthenticationFilter.class);
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 }
