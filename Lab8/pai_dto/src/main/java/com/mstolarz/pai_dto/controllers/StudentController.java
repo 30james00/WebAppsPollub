@@ -16,7 +16,7 @@ public class StudentController {
     private final StudentServiceImpl studentService;
 
     @GetMapping
-    public List<StudentDto> getAllStudents(){
+    public List<StudentDto> getAllStudents() {
         return studentService.getAllStudents();
     }
 }
